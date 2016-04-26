@@ -808,6 +808,11 @@ static void export_kernel_boot_props() {
         { "ro.boot.baseband",   "ro.baseband",   "unknown", },
         { "ro.boot.bootloader", "ro.bootloader", "unknown", },
         { "ro.boot.hardware",   "ro.hardware",   "unknown", },
+        { "ro.boot.radio",      "ro.hw.radio",   NULL, },
+        { "ro.boot.carrier",    "ro.carrier",    NULL, },
+        { "ro.boot.device",     "ro.hw.device",  NULL, },
+        { "ro.boot.hwrev",      "ro.hw.hwrev",   NULL, },
+        { "ro.boot.radio",      "ro.hw.radio",   NULL, },
         { "ro.boot.revision",   "ro.revision",   "0", },
     };
     for (size_t i = 0; i < ARRAY_SIZE(prop_map); i++) {
