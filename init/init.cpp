@@ -826,6 +826,9 @@ static void export_kernel_boot_props() {
         const char *default_value;
     } prop_map[] = {
         { "ro.boot.serialno",   "ro.serialno",   "", },
+// Add ifdef here
+        { "ro.boot.fsg-id",     "ro.fsg-id",     NULL, },
+// add endif here
         { "ro.boot.mode",       "ro.bootmode",   "unknown", },
         { "ro.boot.baseband",   "ro.baseband",   "unknown", },
         { "ro.boot.bootloader", "ro.bootloader", "unknown", },
