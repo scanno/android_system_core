@@ -813,12 +813,30 @@ static void export_kernel_boot_props() {
         { "ro.boot.device",     "ro.hw.device",  NULL, },
         { "ro.boot.hwrev",      "ro.hw.hwrev",   NULL, },
         { "ro.boot.radio",      "ro.hw.radio",   NULL, },
-        { "ro.boot.revision",   "ro.revision",   "0", },
+//        { "ro.boot.revision",   "ro.revision",   "0", },
     };
     for (size_t i = 0; i < ARRAY_SIZE(prop_map); i++) {
         char value[PROP_VALUE_MAX];
         int rc = property_get(prop_map[i].src_prop, value);
         property_set(prop_map[i].dst_prop, (rc > 0) ? value : prop_map[i].default_value);
+    }
+    char tmp[PROP_VALUE_MAX];
+    unsigned revision = 0;
+    int ret = property_get("ro.boot.revision", tmp);
+    if (!ret)
+      ret = property_get("ro.hw.hwrev", tmp);
+      if (ret > 0) {
+	if (strstr(tmp, "0x")) {
+            revision = strtoul(tmp+2, 0, 16);
+	    snprintf(tmp, PROP_VALUE_MAX, "%x", revision);
+        }
+        switch(tmp[0]){
+            case '1': tmp[0] = 's'; break;
+            case '2': tmp[0] = 'm'; break;
+            case '8': tmp[0] = 'p'; break;
+            case '9': tmp[0] = 'd'; break;
+        }
+        property_set("ro.revision", tmp);
     }
 }
 
