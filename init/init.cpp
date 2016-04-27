@@ -797,28 +797,6 @@ static void import_kernel_nv(char *name, bool for_emulator)
     }
 }
 
-/*
- * Adding ro.bootreason, which be used to indicate kpanic/wdt boot status.
- * When ro.boot.last_powerup_reason is set, it denotes this is a 2nd reboot
- * after kpanic/wdt, we set ro.bootreason as coldboot to copy logs.
- * Otherwise,we would set ro.bootreason the same as ro.boot.bootreason.
- */
-// Add ifdef here
-static void export_kernel_boot_reason(void)
-{
-    char tmp[PROP_VALUE_MAX];
-    int ret;
-    ret = property_get("ro.boot.last_powerup_reason", tmp);
-    if (ret) {
-        property_set("ro.bootreason", "coldboot");
-    } else {
-        ret = property_get("ro.boot.bootreason", tmp);
-        if (ret)
-            property_set("ro.bootreason", tmp);
-    }
-}
-// add endif here
-
 static void export_kernel_boot_props() {
     struct {
         const char *src_prop;
@@ -833,22 +811,18 @@ static void export_kernel_boot_props() {
         { "ro.boot.baseband",   "ro.baseband",   "unknown", },
         { "ro.boot.bootloader", "ro.bootloader", "unknown", },
         { "ro.boot.hardware",   "ro.hardware",   "unknown", },
-// add ifdef here
         { "ro.boot.radio",      "ro.hw.radio",   NULL, },
         { "ro.boot.carrier",    "ro.carrier",    NULL, },
         { "ro.boot.device",     "ro.hw.device",  NULL, },
         { "ro.boot.hwrev",      "ro.hw.hwrev",   NULL, },
         { "ro.boot.radio",      "ro.hw.radio",   NULL, },
-// add else here
 //        { "ro.boot.revision",   "ro.revision",   "0", },
-// add endif here
     };
     for (size_t i = 0; i < ARRAY_SIZE(prop_map); i++) {
         char value[PROP_VALUE_MAX];
         int rc = property_get(prop_map[i].src_prop, value);
         property_set(prop_map[i].dst_prop, (rc > 0) ? value : prop_map[i].default_value);
     }
-// add ifdef here
     char tmp[PROP_VALUE_MAX];
     unsigned revision = 0;
     int ret = property_get("ro.boot.revision", tmp);
@@ -867,8 +841,6 @@ static void export_kernel_boot_props() {
         }
         property_set("ro.revision", tmp);
     }
-    export_kernel_boot_reason();
-// add endif here
 }
 
 static void process_kernel_dt(void)
